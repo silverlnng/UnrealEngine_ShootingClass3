@@ -18,8 +18,14 @@ AMyActor1::AMyActor1()
 // Called when the game starts or when spawned
 void AMyActor1::BeginPlay()
 {
+	//super (나에게 상속 한 부모의 원본)
 	Super::BeginPlay();
-	
+	//
+	UE_LOG(LogTemp, Warning, TEXT("%d"), number1);
+	UE_LOG(LogTemp, Warning, TEXT("%f"), number2);
+	UE_LOG(LogTemp, Warning, TEXT("%s"), *myname);
+
+	//* 포인터의 개념 
 }
 
 // Called every frame
@@ -32,6 +38,6 @@ void AMyActor1::Tick(float DeltaTime)
 //초기화 하는 함수를 만들기
 void AMyActor1::InitializeDamages()
 {
-	Damage = 0;
-	Damage2 = 0;
+	Damage = 10;
+	Damage2 = 20;
 }
