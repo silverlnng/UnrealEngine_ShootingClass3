@@ -19,9 +19,9 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-	//수정과 재정의 는 다름
+	// 수정과 재정의 는 다름
 	// 수정은 원본을 건드림 => 부모 것을 건드리는 것
-	// 재정의는 원래 내용이 없던것의 내용을 정의 해주는 것
+	// 재정의는 원본건드리지 않고 다른내용으로 재정의를 해주는것 
 
 public:	
 	// Called every frame
