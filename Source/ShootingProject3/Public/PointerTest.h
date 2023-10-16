@@ -3,17 +3,17 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Pawn.h"
-#include "MyPawn.generated.h"
+#include "GameFramework/Actor.h"
+#include "PointerTest.generated.h"
 
 UCLASS()
-class SHOOTINGPROJECT3_API AMyPawn : public APawn
+class SHOOTINGPROJECT3_API APointerTest : public AActor
 {
 	GENERATED_BODY()
-
-public:
-	// Sets default values for this pawn's properties
-	AMyPawn();
+	
+public:	
+	// Sets default values for this actor's properties
+	APointerTest();
 
 protected:
 	// Called when the game starts or when spawned
@@ -23,7 +23,7 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	int32 number1;
+	int32* number1Pointer;
 
 };
