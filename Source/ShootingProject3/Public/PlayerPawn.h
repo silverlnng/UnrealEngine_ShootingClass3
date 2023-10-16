@@ -28,7 +28,7 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	class UBoxComponent* myBoxComp;
-	//주체 player의  박스 충돌체 (=콜리전 ) 컴포넌트를 선언  
+	//주체 player의  박스 충돌체 (=콜리전 ) 컴포넌트를 주소 선언  
 	UPROPERTY(EditAnywhere)
 	class UStaticMeshComponent* myMeshComp;
 };
