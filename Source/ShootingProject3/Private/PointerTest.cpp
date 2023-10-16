@@ -16,28 +16,45 @@ void APointerTest::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	number1 = 1234;
+	number1 = 1;
 	number1Pointer = &number1;
-	number2 = 5678;
+	number2 = 2;
 	number2Pointer = &number2;
+	number3 = 3;
+	number3Pointer = &number3;
+	tempPtr = NULL;
+	//temp = &number1;
+	//temp = 0;
 
 	//UE_LOG(LogTemp, Warning, TEXT("%d"), number1);
 	//UE_LOG(LogTemp, Warning, TEXT("%d"), number1Pointer);
 	//역참조
-	UE_LOG(LogTemp, Warning, TEXT("%d"), *number1Pointer);
-	UE_LOG(LogTemp, Warning, TEXT("%d"), *number2Pointer);
+	//UE_LOG(LogTemp, Warning, TEXT("%d"), *number1Pointer);
+	//UE_LOG(LogTemp, Warning, TEXT("%d"), *number2Pointer);
+
+	//number1, number2 와 swap함수 내에 있는 pa 와 pb 는 다른 메모리 공간을 차지하고 있는 다른 변수
+	//Swap(number1, number2);
+	//UE_LOG(LogTemp, Warning, TEXT("%d"), *number1Pointer);
+	//UE_LOG(LogTemp, Warning, TEXT("%d"), *number2Pointer);
 
 	//주소 값을 인자로 받아주기 
-	Swap(&number1, &number2);
+	/*Swap(&number1, &number2);
 
 	UE_LOG(LogTemp, Warning, TEXT("%d"), *number1Pointer);
-	UE_LOG(LogTemp, Warning, TEXT("%d"), *number2Pointer);
+	UE_LOG(LogTemp, Warning, TEXT("%d"), *number2Pointer);*/
 
 	//*number1Pointer = 5678;
 	//UE_LOG(LogTemp, Warning, TEXT("%d"), number1);
+	
+	Swap(&number1, &number2, &number3);
+
+	UE_LOG(LogTemp, Warning, TEXT("%d"), *number1Pointer);
+	UE_LOG(LogTemp, Warning, TEXT("%d"), *number2Pointer);
+	UE_LOG(LogTemp, Warning, TEXT("%d"), *number3Pointer);
 }
 
-//매개변수를 포인터로 설정해서 , 레퍼런스 그자체 값을 인수로 받을수 있게 되었음
+// call by reference
+// 매개변수를 포인터로 설정해서 , 레퍼런스 그자체 값을 인수로 받을수 있게 되었음
 void APointerTest::Swap(int* pa, int* pb)
 {
 	// 포인터 pb가 역참조로 가르키는 곳을 먼저 temp 에 저장해두기 
@@ -48,6 +65,28 @@ void APointerTest::Swap(int* pa, int* pb)
 	*pa = temp;
 	//결과 적으로 인수그 자체의 원본 값을 서로 교체 
 }
+
+// call by value
+// 복사 
+void APointerTest::Swap(int pa, int pb)
+{
+	int temp = pb;
+	pb = pa;
+	pa = temp;
+}
+
+//숫자 세개의 값 변경하기
+void APointerTest::Swap(int* pa, int* pb, int* pc)
+{
+	int _temp ;
+	tempPtr = &_temp;
+	*tempPtr = *pa;
+	*pa = *pc;
+	*pc = *pb;
+	*pb = *tempPtr;
+
+}
+
 
 
 // Called every frame
