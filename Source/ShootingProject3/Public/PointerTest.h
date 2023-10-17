@@ -37,4 +37,5 @@ public:
 	void Swap(int* pa, int* pb); //매개변수를 포인터로 설정해서 , 레퍼런스 그자체 값을 인수로 받을수 있게 되었음
 	void Swap(int pa, int pb);	//매개변수의 타입을 다르게 해줘서 Swap함수에 override , 값으로 전달 
 	void Swap(int* pa, int* pb , int* pc);
+	void SwapThree(int& pa, int& pb, int& pc);
 };

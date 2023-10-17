@@ -79,14 +79,30 @@ void APointerTest::Swap(int pa, int pb)
 void APointerTest::Swap(int* pa, int* pb, int* pc)
 {
 	int _temp ;
+	//임시 변수 선언
 	tempPtr = &_temp;
+	// tempPtr 이 임시변수의 주소를 포인트하도록 대입
 	*tempPtr = *pa;
+	//tempPtr이 포인트하고 있는 _temp의 값이 pa 가 포인트하고 있는 1로 변경. 
+	// _temp=1
 	*pa = *pc;
+	//pa가 포인트 하고있는 곳은 pc가 가르키고 있는 3으로 변경
+	//*pa=3
 	*pc = *pb;
+	//pc가 포인트 하고 있는곳은 pb가 포인트하고있는 2로 변경
+	//*pc=2
 	*pb = *tempPtr;
-
+	//*pb=1
 }
 
+// 수학을 이용해서 숫자 세개를 스왑하는 또 다른방법
+void APointerTest::SwapThree(int &pa, int &pb, int &pc)
+{
+	pa = pa + pb + pc;
+	pb = pa - (pb + pc);
+	pc = pa - (pb + pc);
+	pa = pa - (pb + pc);
+}
 
 
 // Called every frame

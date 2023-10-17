@@ -31,4 +31,5 @@ public:
 	//주체 player의  박스 충돌체 (=콜리전 ) 컴포넌트를 주소 선언  
 	UPROPERTY(EditAnywhere)
 	class UStaticMeshComponent* myMeshComp;
+	//주소를 선언한 것 
 };
