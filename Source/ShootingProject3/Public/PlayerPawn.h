@@ -6,6 +6,8 @@
 #include "GameFramework/Pawn.h"
 #include "PlayerPawn.generated.h"
 
+class UInputMappingContext;
+
 UCLASS()
 class SHOOTINGPROJECT3_API APlayerPawn : public APawn
 {
@@ -18,6 +20,11 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	void MoveFourWay(float value);
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly,Category = Input)
+	UInputMappingContext* PlayerMappingContext;
 
 public:	
 	// Called every frame
@@ -32,4 +39,7 @@ public:
 	UPROPERTY(EditAnywhere)
 	class UStaticMeshComponent* myMeshComp;
 	//주소를 선언한 것 
+
+
+
 };

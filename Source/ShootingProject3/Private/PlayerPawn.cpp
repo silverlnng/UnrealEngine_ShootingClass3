@@ -4,6 +4,8 @@
 #include "PlayerPawn.h"
 #include "Components/BoxComponent.h"
 #include "Components/StaticMeshComponent.h"
+#include "EnhancedInputSubsystems.h"
+
 //헤더에 BoxComponent 가 무엇인지 선언해주기 
 //헤더에 많이 넣는다고 성능차이는 안나지만 컴파일러에서 차이가 남 ! 
 
@@ -33,7 +35,6 @@ APlayerPawn::APlayerPawn()
 	//정적 : 플레이 중에 내용물이 바뀌지 않는다 = 컴퓨터가 알 필요 없다 = 미리 연산
 	//동적 : 플레이 중에 내용물이 바뀐다 = 컴퓨터가 알고 있고 주시해야함 
 	
-
 	myMeshComp-> SetupAttachment(myBoxComp);
 	//SetupAttachment : myMeshComp의 부모를 myBoxComp으로 정함   
 	const FVector meshlocation = FVector(0, 0, -50);
@@ -54,6 +55,8 @@ APlayerPawn::APlayerPawn()
 		myMeshComp->SetStaticMesh(MeshRef.Object);
 	}
 
+	//myMeshComp = CreateDefaultSubobject<>
+
 }
 
 // Called when the game starts or when spawned
@@ -61,6 +64,15 @@ void APlayerPawn::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	if (APlayerController* PlayerController = Cast<APlayerController>(GetController()))
+	{
+		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
+		{
+			Subsystem->AddMappingContext(PlayerMappingContext, 0);
+		}
+		
+	}
+
 }
 
 // Called every frame
