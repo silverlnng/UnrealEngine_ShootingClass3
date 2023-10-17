@@ -5,6 +5,7 @@
 #include "Components/BoxComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "EnhancedInputComponent.h"
 
 //헤더에 BoxComponent 가 무엇인지 선언해주기 
 //헤더에 많이 넣는다고 성능차이는 안나지만 컴파일러에서 차이가 남 ! 
@@ -75,6 +76,21 @@ void APlayerPawn::BeginPlay()
 
 }
 
+void APlayerPawn::Move(const FInputActionValue& value)
+{
+	const FVector CurrentValue = value.Get<FVector>();
+	
+	//게임모드의 디폴트 pawn 인지 확인하는 것 
+	if (Controller)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%f"), CurrentValue.X);
+		UE_LOG(LogTemp, Warning, TEXT("%f"), CurrentValue.Y);
+
+		SetActorLocation(GetActorLocation() + CurrentValue * 100.0f * GetWorld()->GetDeltaSeconds());
+	}
+
+}
+
 // Called every frame
 void APlayerPawn::Tick(float DeltaTime)
 {
@@ -82,10 +98,16 @@ void APlayerPawn::Tick(float DeltaTime)
 
 }
 
+// 인풋 을 바인딩 하는 구역
 // Called to bind functionality to input
 void APlayerPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
+
+	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked< UEnhancedInputComponent>(PlayerInputComponent))
+	{
+		EnhancedInputComponent->BindAction(MoveAxis, ETriggerEvent::Triggered, this, &APlayerPawn::Move);
+	}
 
 }
 
