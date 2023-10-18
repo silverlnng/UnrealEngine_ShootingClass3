@@ -30,6 +30,8 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
 	UInputAction* MoveAxis;
+	// 선언하고 만들어둔 InputAction  를  에디터에서 할당  "Category = Input"
+
 
 	void Move(const FInputActionValue& value);
 
