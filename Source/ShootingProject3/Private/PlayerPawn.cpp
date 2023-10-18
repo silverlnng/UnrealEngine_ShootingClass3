@@ -4,8 +4,10 @@
 #include "PlayerPawn.h"
 #include "Components/BoxComponent.h"
 #include "Components/StaticMeshComponent.h"
+#include "Components/ArrowComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
+#include "MyBullect.h"
 
 //헤더에 BoxComponent 가 무엇인지 선언해주기 
 //헤더에 많이 넣는다고 성능차이는 안나지만 컴파일러에서 차이가 남 ! 
@@ -48,16 +50,18 @@ APlayerPawn::APlayerPawn()
 	//
 	//임베이디드 
 	//모바일 (사진저장 기능/ 핸드폰의 갤러리 경로에 접근 해야할때)
-	static ConstructorHelpers::FObjectFinder<UStaticMesh>MeshRef(TEXT("/Script/Engine.StaticMesh'/Game/StarterContent/Shapes/Shape_Torus.Shape_Torus'"));
+	//static ConstructorHelpers::FObjectFinder<UStaticMesh>MeshRef(TEXT("/Script/Engine.StaticMesh'/Game/StarterContent/Shapes/Shape_Torus.Shape_Torus'"));
 
-	if (MeshRef.Succeeded() && MeshRef.Object != nullptr)
-	{
-		//myMeshComp 는 주소이다 그래서 ->을 사용  
-		myMeshComp->SetStaticMesh(MeshRef.Object);
-	}
-
-	//myMeshComp = CreateDefaultSubobject<>
-
+	//if (MeshRef.Succeeded() && MeshRef.Object != nullptr)
+	//{
+	//	//myMeshComp 는 주소이다 그래서 ->을 사용  
+	//	myMeshComp->SetStaticMesh(MeshRef.Object);
+	//}
+	
+	
+	firePosition = CreateDefaultSubobject<UArrowComponent>(TEXT("ArrowCompo"));
+	firePosition->SetupAttachment(myMeshComp);
+	//총구생성시키기
 }
 
 // Called when the game starts or when spawned
@@ -79,17 +83,37 @@ void APlayerPawn::BeginPlay()
 void APlayerPawn::Move(const FInputActionValue& value)
 {
 	const FVector CurrentValue = value.Get<FVector>();
-	
+	//여기서 value값은 IA_Move가 Axis으로 설정되있어서 0~1 값을 받는다
+
 	//게임모드의 디폴트 pawn 인지 확인하는 것 
 	if (Controller)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("%f"), CurrentValue.X);
-		UE_LOG(LogTemp, Warning, TEXT("%f"), CurrentValue.Y);
+		//UE_LOG(LogTemp, Warning, TEXT("%f"), CurrentValue.X);
+		//UE_LOG(LogTemp, Warning, TEXT("%f"), CurrentValue.Y);
 
 		SetActorLocation(GetActorLocation() + CurrentValue * 100.0f * GetWorld()->GetDeltaSeconds());
 	}
 
 }
+
+void APlayerPawn::Fire(const FInputActionValue& value)
+{
+	//여기서 총알 블루프린트를  fire position 에 생성시키기
+	// fireInputAsset 에서 받은 value값이 온다 .
+	// fireInputAsset 은 digital으로 설정으로 value값은 0 또는 1 이다.
+
+	if (Controller && value.Get<bool>() == true)
+	{
+		//여기서 쿨타임을 설정할수있음 !!
+		//쏠수있는 상태가 된다면 
+
+		AMyBullect* bullect = GetWorld()->SpawnActor<AMyBullect>(bullectFactory, firePosition->GetComponentLocation(), firePosition->GetComponentRotation());
+		//GetWorld 는 레벨에서 세상을 의미
+
+	}
+
+}
+
 
 // Called every frame
 void APlayerPawn::Tick(float DeltaTime)
@@ -107,6 +131,11 @@ void APlayerPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked< UEnhancedInputComponent>(PlayerInputComponent))
 	{
 		EnhancedInputComponent->BindAction(MoveAxis, ETriggerEvent::Triggered, this, &APlayerPawn::Move);
+		EnhancedInputComponent->BindAction(fireInputAsset, ETriggerEvent::Started, this, &APlayerPawn::Fire);
+
+		// ETriggerEvent::Started,Completed ,,등 을 조절해서 바인드 액션을 조절할수있다
+		
+
 	}
 
 }

@@ -2,6 +2,7 @@
 
 
 #include "MyBullect.h"
+#include "GameFramework/Actor.h"
 #include "Components/SphereComponent.h"
 #include "Components/StaticMeshComponent.h"
 
@@ -22,9 +23,13 @@ AMyBullect::AMyBullect()
 	
 	myMeshComp->SetupAttachment(mySphereComp);
 	const FVector Position = FVector(0, 0, -5.0f);
-	const float Scale = 0.1f;
+	const FVector Scale = FVector(0.1f,0.1f,0.1f);
+
 	myMeshComp->SetRelativeLocation(Position);
-	myMeshComp->SetAllMassScale(Scale);
+	//myMeshComp->SetWorldScale3D(Scale);
+	myMeshComp->SetRelativeScale3D(Scale);
+
+	moveSpeed = 100.0f;
 
 
 }
@@ -42,7 +47,7 @@ void AMyBullect::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	//tick에 정의를 해서 생성하자마자 + 계속 움직이도록 만듬
-	SetActorLocation(GetActorLocation() + GetActorForwardVector() * 100 * GetWorld()->GetDeltaSeconds());
+	SetActorLocation(GetActorLocation() + GetActorForwardVector() * moveSpeed * GetWorld()->GetDeltaSeconds());
 }
 
 //enemy 와 충돌을 감지 
