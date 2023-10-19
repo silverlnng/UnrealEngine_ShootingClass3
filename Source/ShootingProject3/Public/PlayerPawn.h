@@ -64,8 +64,6 @@ public:
 	// <클래스> 들의 복수개 모임 = 클래스의 세트 로 생각하기
 
 	//fire 의 cooltime 설정하기 위해서 만든 변수
-	UPROPERTY(EditAnywhere)
-	float currentTime;
 
 	UPROPERTY(EditAnywhere)
 	float fireCoolTime;
@@ -75,5 +73,9 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	class USoundBase* firesound;
+
+private:
+	UPROPERTY(VisibleAnywhere)
+	float currentTime;
 
 };

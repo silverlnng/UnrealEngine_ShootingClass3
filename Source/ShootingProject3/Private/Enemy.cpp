@@ -4,6 +4,13 @@
 #include "Enemy.h"
 #include "Components/BoxComponent.h"
 #include "Components/StaticMeshComponent.h"
+#include "Components/ArrowComponent.h"
+#include "MyBullect.h"
+#include "PlayerPawn.h"
+#include "EngineUtils.h"
+#include "Kismet/GameplayStatics.h"
+
+
 
 //enemy는 랜덤으로 앞으로 움직이거나 플레이어를 향해 움직인다
 
@@ -29,9 +36,18 @@ AEnemy::AEnemy()
 	myMeshComp->SetRelativeLocation(Position);
 	myMeshComp->SetRelativeScale3D(Scale);
 
+	firePosition = CreateDefaultSubobject<UArrowComponent>(TEXT("ArrowCompo"));
+	firePosition->SetupAttachment(myMeshComp);
+	//총구생성시키기
+
+	currentTime = 0.0f;
+	fireCoolTime = 3.0f;
+
+
 	moveSpeed = 100.0f;
 	traceRate = 0.5;
 	tracePlayer = false;
+	dir = FVector(0, 0, 0);
 }
 
 // Called when the game starts or when spawned
@@ -56,6 +72,26 @@ void AEnemy::BeginPlay()
 void AEnemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	if (currentTime >= fireCoolTime)
+	{
+		currentTime = 0;
+		for (TActorIterator<APlayerPawn> player(GetWorld()); player; ++player)
+		{
+			if (player->GetName().Contains(TEXT("BP_MyPlayerPawn")))
+			{
+				dir = player->GetActorLocation() - firePosition->GetComponentLocation();
+				dir.Normalize();
+			}
+
+		}
+		Fire();
+	}
+	else
+	{
+		currentTime += DeltaTime;
+	}
+
 	//if (tracePlayer)
 	//{
 	//	//플레이어를 추적하는 함수 작동
@@ -69,11 +105,28 @@ void AEnemy::Tick(float DeltaTime)
 	//	//그냥 앞으로 움직이도록 작동 
 	//	SetActorLocation(GetActorLocation() + GetActorForwardVector() * moveSpeed * DeltaTime);
 	//}
-		SetActorLocation(GetActorLocation() + GetActorForwardVector() * moveSpeed * DeltaTime);
+	SetActorLocation(GetActorLocation() + GetActorForwardVector() * moveSpeed * DeltaTime);
+
+	// 플레이어 - 총구 로 각도구하기
+
+	
+
 }
 
 void AEnemy::TracePlayerMove()
 {
 
+}
+
+void AEnemy::Fire()
+{
+	const FRotator tempVector = dir.Rotation();
+
+	AMyBullect* bullect = GetWorld()->SpawnActor<AMyBullect>(bullectFactory, firePosition->GetComponentLocation(), tempVector);
+	//GetWorld 는 레벨에서 세상을 의미
+
+	//총알 발사 소리 내기
+	// 월드 ( 어느월드 , 사운드 , 사운드를 낼 위치 ) 
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), firesound, firePosition->GetComponentLocation());
 }
 

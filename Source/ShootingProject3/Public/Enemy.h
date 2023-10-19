@@ -18,6 +18,8 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	void TracePlayerMove();
+	void Fire();
 
 public:	
 	// Called every frame
@@ -29,6 +31,10 @@ public:
 	class UStaticMeshComponent* myMeshComp;
 
 	UPROPERTY(EditAnywhere)
+	class UArrowComponent* firePosition;
+	//총구 선언
+
+	UPROPERTY(EditAnywhere)
 	float moveSpeed;
 
 	UPROPERTY(EditAnywhere)
@@ -36,6 +42,22 @@ public:
 
 	bool tracePlayer;
 
-	void TracePlayerMove();
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<class AMyBullect> bullectFactory;
+	
+	UPROPERTY(EditAnywhere)
+	float fireCoolTime;
+
+	UPROPERTY(EditAnywhere)
+	class USoundBase* firesound;
+
+private:
+	UPROPERTY(VisibleAnywhere)
+	float currentTime;
+
+	//회전각도
+	UPROPERTY(VisibleAnywhere)
+	FVector dir;
 
 };
