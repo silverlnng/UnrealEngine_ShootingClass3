@@ -41,14 +41,14 @@ void AEnemy::BeginPlay()
 
 	//생성될때 한번 랜덤수를 정해서 어떻게 움직일지를 결정하기 
 	int32 randomResult = FMath::RandRange(0, 1);
-	if (randomResult >= traceRate)
+	/*if (randomResult >= traceRate)
 	{
 		tracePlayer = true;
 	}
 	else
 	{
 		tracePlayer = false;
-	}
+	}*/
 	
 }
 
@@ -56,15 +56,20 @@ void AEnemy::BeginPlay()
 void AEnemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	if (tracePlayer)
-	{
-		//플레이어를 추적하는 함수 작동
-	}
-	else
-	{
-		//그냥 앞으로 움직이도록 작동 
+	//if (tracePlayer)
+	//{
+	//	//플레이어를 추적하는 함수 작동
+
+	//	//월드에 있는 플레이어 찾고 유효하다면 
+	//	// 플레이어의 위치 - 스폰위치 로 각도 구해서 그방향으로 움직이도록 만들기
+
+	//}
+	//else
+	//{
+	//	//그냥 앞으로 움직이도록 작동 
+	//	SetActorLocation(GetActorLocation() + GetActorForwardVector() * moveSpeed * DeltaTime);
+	//}
 		SetActorLocation(GetActorLocation() + GetActorForwardVector() * moveSpeed * DeltaTime);
-	}
 }
 
 void AEnemy::TracePlayerMove()

@@ -8,6 +8,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
 #include "MyBullect.h"
+#include "Kismet/GameplayStatics.h"
 
 //헤더에 BoxComponent 가 무엇인지 선언해주기 
 //헤더에 많이 넣는다고 성능차이는 안나지만 컴파일러에서 차이가 남 ! 
@@ -64,8 +65,8 @@ APlayerPawn::APlayerPawn()
 	//총구생성시키기
 
 	currentTime = 0.0f;
-	delayTime = 3.0f;
-	timePassed = true;
+	fireCoolTime = 3.0f;
+	coolTimePassed = true;
 
 }
 
@@ -107,17 +108,23 @@ void APlayerPawn::Fire(const FInputActionValue& value)
 	// fireInputAsset 에서 받은 value값이 온다 .
 	// fireInputAsset 은 digital으로 설정으로 value값은 0 또는 1 이다.
 
-	if (Controller && value.Get<bool>() == true && timePassed)
+	if (Controller && value.Get<bool>() == true)
 	{
 		//여기서 쿨타임을 설정할수있음 !!
 		//쏠수있는 상태가 된다면 총알을 발사 
 		//총알을 쏘는순간 타이머를 작동시킴 
 		//타이머가 일정시간을 지나야 총알을 쏘는게 가능
-		AMyBullect* bullect = GetWorld()->SpawnActor<AMyBullect>(bullectFactory, firePosition->GetComponentLocation(), firePosition->GetComponentRotation());
-		//GetWorld 는 레벨에서 세상을 의미
+		if (coolTimePassed)
+		{
+			AMyBullect* bullect = GetWorld()->SpawnActor<AMyBullect>(bullectFactory, firePosition->GetComponentLocation(), firePosition->GetComponentRotation());
+			//GetWorld 는 레벨에서 세상을 의미
+			bullectTimerStarted = true;
+			currentTime = 0;
 
-		bullectTimerStarted = true;
-		currentTime = 0;
+			//총알 발사 소리 내기
+			// 월드 ( 어느월드 , 사운드 , 사운드를 낼 위치 ) 
+			UGameplayStatics::PlaySoundAtLocation(GetWorld(), firesound, firePosition->GetComponentLocation());
+		}
 	}
 
 }
@@ -130,13 +137,14 @@ void APlayerPawn::Tick(float DeltaTime)
 
 	if (bullectTimerStarted)
 	{
-		if (currentTime >= delayTime)
+		if (currentTime >= fireCoolTime)
 		{
-			timePassed = true;
+			coolTimePassed = true;
+			bullectTimerStarted = false;
 		}
 		else
 		{
-			timePassed = false;
+			coolTimePassed = false;
 			currentTime += DeltaTime;
 		}
 	}
@@ -154,6 +162,7 @@ void APlayerPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 		EnhancedInputComponent->BindAction(MoveAxis, ETriggerEvent::Triggered, this, &APlayerPawn::Move);
 		EnhancedInputComponent->BindAction(fireInputAsset, ETriggerEvent::Started, this, &APlayerPawn::Fire);
 
+		//여기서 바인딩을 해서 인풋때마다 Move , Fire 함수가 실행되는 것 
 		// ETriggerEvent::Started,Completed ,,등 을 조절해서 바인드 액션을 조절할수있다
 		
 
