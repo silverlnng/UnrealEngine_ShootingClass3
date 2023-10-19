@@ -62,6 +62,11 @@ APlayerPawn::APlayerPawn()
 	firePosition = CreateDefaultSubobject<UArrowComponent>(TEXT("ArrowCompo"));
 	firePosition->SetupAttachment(myMeshComp);
 	//총구생성시키기
+
+	currentTime = 0.0f;
+	delayTime = 3.0f;
+	timePassed = true;
+
 }
 
 // Called when the game starts or when spawned
@@ -102,14 +107,17 @@ void APlayerPawn::Fire(const FInputActionValue& value)
 	// fireInputAsset 에서 받은 value값이 온다 .
 	// fireInputAsset 은 digital으로 설정으로 value값은 0 또는 1 이다.
 
-	if (Controller && value.Get<bool>() == true)
+	if (Controller && value.Get<bool>() == true && timePassed)
 	{
 		//여기서 쿨타임을 설정할수있음 !!
-		//쏠수있는 상태가 된다면 
-
+		//쏠수있는 상태가 된다면 총알을 발사 
+		//총알을 쏘는순간 타이머를 작동시킴 
+		//타이머가 일정시간을 지나야 총알을 쏘는게 가능
 		AMyBullect* bullect = GetWorld()->SpawnActor<AMyBullect>(bullectFactory, firePosition->GetComponentLocation(), firePosition->GetComponentRotation());
 		//GetWorld 는 레벨에서 세상을 의미
 
+		bullectTimerStarted = true;
+		currentTime = 0;
 	}
 
 }
@@ -120,7 +128,20 @@ void APlayerPawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (bullectTimerStarted)
+	{
+		if (currentTime >= delayTime)
+		{
+			timePassed = true;
+		}
+		else
+		{
+			timePassed = false;
+			currentTime += DeltaTime;
+		}
+	}
 }
+
 
 // 인풋 을 바인딩 하는 구역
 // Called to bind functionality to input

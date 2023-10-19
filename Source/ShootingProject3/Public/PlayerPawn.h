@@ -63,4 +63,12 @@ public:
 	// 총알클래스를 상속받아 만든 블루프린트 를 에디터 에서 연결시키기 
 	// <클래스> 들의 복수개 모임 = 클래스의 세트 로 생각하기
 
+	UPROPERTY(EditAnywhere)
+	float currentTime;
+
+	UPROPERTY(EditAnywhere)
+	float delayTime;
+
+	bool bullectTimerStarted;
+	bool timePassed;
 };
